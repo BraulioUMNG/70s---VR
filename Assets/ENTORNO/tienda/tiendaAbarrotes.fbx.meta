@@ -1,0 +1,510 @@
+fileFormatVersion: 2
+guid: aac4a8d5be08261408e28a921df65508
+ModelImporter:
+  serializedVersion: 24200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Rojo3
+    second: {fileID: 2100000, guid: b21e0df7ddc7d074b97b53cd62908745, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: vidrio3
+    second: {fileID: 7479401215491891372, guid: 00b77824dc7e2674cad6b0eaba1a5fd6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 10centavo
+    second: {fileID: 2800000, guid: 40819df55ebf72a46b592ab7bc89ac8a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 10peso
+    second: {fileID: 2800000, guid: ade1e2baa01b247479ed9aca4dc856cb, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 1centavo
+    second: {fileID: 2800000, guid: eb137a886d2b34b4c92129252f4e2ea8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 1peso
+    second: {fileID: 2800000, guid: f8d854d07debd654981b736defcb7aa5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 20peso
+    second: {fileID: 2800000, guid: f7168272910cdd54b81107d784d8f5d2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 2centavo
+    second: {fileID: 2800000, guid: 84d6377173227bf488cb0354b31d864d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 5centavo
+    second: {fileID: 2800000, guid: be47e052c8c4e4540b241acaac787847, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 5peso
+    second: {fileID: 2800000, guid: ff460cb058c6e6b4698248a135986b2e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Aliminum_Can_LP_blinn1SG_BaseColor
+    second: {fileID: 2800000, guid: f93e83531dfdc05439ac52bc1a036477, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Chair_Base_color
+    second: {fileID: 2800000, guid: e398f81d94d7d0a40b1ddb8187327aa3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: CoffeSack_COLOR
+    second: {fileID: 2800000, guid: dc3d362848e5f1d4e8371762195da0d2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Glass_with_square_pattern_basecolor
+    second: {fileID: 2800000, guid: 4da77a8c7670a674c93919c728e09fba, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: NiHonBucket_Albedo
+    second: {fileID: 2800000, guid: 649fae66d250bda4abfce6f72a6875c4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Round_table_Base_color
+    second: {fileID: 2800000, guid: c3c6078cb0dc8184dbaaba5524fe3a16, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: SM_Bookcase_T_Bookcase_BaseColor.1001
+    second: {fileID: 2800000, guid: 660961e88d635ed47ba2eea96d100dcd, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: SackLunch_BaseColor
+    second: {fileID: 2800000, guid: 903ce135c3e6aa5489e078fdfa72c8f9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TZenuAl
+    second: {fileID: 2800000, guid: c9a8aa7c1cc82d545a839fb3bd3fe622, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TZenuEs
+    second: {fileID: 2800000, guid: 3bb83af407be03e40abed0d8fadafdf1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TZenuJa
+    second: {fileID: 2800000, guid: a79e820ceed7fff4bbefe08e3fad4432, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TZenuSa
+    second: {fileID: 2800000, guid: f3d9e67df8cc63d46b6e0bcc4d552f8d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuBloqPanela
+    second: {fileID: 2800000, guid: 695d3910acc98fc43ab62a5387eb48b4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuCaramel
+    second: {fileID: 2800000, guid: e37ac5ecf63b0804eace1880d5162a27, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuCarve
+    second: {fileID: 2800000, guid: c7f4e638287e44f449a030fc8593809a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuChicle
+    second: {fileID: 2800000, guid: 8e6d6f1ac27e8d643a945787529df96c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuChicleNoel
+    second: {fileID: 2800000, guid: 597d98d6e3e7bd34297be79c614ece2f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuFruna
+    second: {fileID: 2800000, guid: 9f93c457efbd38b46baa91090610fd39, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuGalletas1
+    second: {fileID: 2800000, guid: a2c5e24c984e230409ff490345dd3197, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuGalletas2
+    second: {fileID: 2800000, guid: ee731f71197336a429507b8f1c2069f6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuGalletas3
+    second: {fileID: 2800000, guid: a1f45d0fc1652514d8a2b6c4ff3a1d37, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuJar
+    second: {fileID: 2800000, guid: 9c4bb1d1aec6cdb429d78dcc74f0cd0b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuJarTape
+    second: {fileID: 2800000, guid: 1321e6dd5d6793548ae289e1daa1e2e7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuLataGalleta
+    second: {fileID: 2800000, guid: 5d43f4aec51ade042864c4a979c2a724, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuLataGalleta2
+    second: {fileID: 2800000, guid: 0d7c809a88a46654e9e59cddf7455f22, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuPaleta
+    second: {fileID: 2800000, guid: b32221bb054fe2141bd6d5d3ed23c3db, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuPlatea
+    second: {fileID: 2800000, guid: 6929127f098a6cc4d97c91c339689da5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: TextuSardina
+    second: {fileID: 2800000, guid: dfc03ca360ec26744aa83da7c2a6b558, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Textucafe1
+    second: {fileID: 2800000, guid: dd2c0c1597f886c4dbb8be323341467b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Textucafe2
+    second: {fileID: 2800000, guid: ed194ddd691dfad4bba833eb7c2d6c89, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: Textutomatevinegar
+    second: {fileID: 2800000, guid: 9b36968a6472d634a9b8226db90c696e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: arepa
+    second: {fileID: 2800000, guid: 655a9c53f4d6c644da2918a205353f6a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: arequipe
+    second: {fileID: 2800000, guid: da477f87a722dab40810d3280035c4f1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: arroz
+    second: {fileID: 2800000, guid: 14de9413f81058341b6f62e117cdbc59, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: azucar
+    second: {fileID: 2800000, guid: 86ab29e8a65919a408d657d1685acf17, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: "bu\xF1uelo"
+    second: {fileID: 2800000, guid: 02b4a07b02d8339498c167b24a114447, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: canasta
+    second: {fileID: 2800000, guid: 27b11d314e0a0a34bb571356e740668d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: canasta2
+    second: {fileID: 2800000, guid: 47f4e64ba73f3534e83b843f237edb01, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: canasta3
+    second: {fileID: 2800000, guid: 7c6f98a7d769949439ebaaff7ccaad69, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: canasta4
+    second: {fileID: 2800000, guid: a8da39a9eba5d9a419f2b3cfcaae1e6a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: casa
+    second: {fileID: 2800000, guid: 67fb5eff93fca0f44ac2c9bc0c24345d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: casaTecho
+    second: {fileID: 2800000, guid: a68d94a9453d2474baaedba388c434b2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: cigarrillo
+    second: {fileID: 2800000, guid: 98e7b533680cc0a4e88004d0dd1fd101, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: clock_low_clock_BaseColor
+    second: {fileID: 2800000, guid: c3900d9b59425a6449940a3ff8c874f6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: coca
+    second: {fileID: 2800000, guid: e6972aac20f171f49a961282c51de50e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: cristal
+    second: {fileID: 2800000, guid: 81c26da1b17f92241af3eb6af29fb6e0, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: cuadro1
+    second: {fileID: 2800000, guid: 9104be50ae88356428ab37ec9b9ad55e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: cuadro2
+    second: {fileID: 2800000, guid: 4ef8dbacfc71e41439bbdef23fcd577c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: cuadro3
+    second: {fileID: 2800000, guid: 27fe7aca466c0d745adfcda261bcbbb7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: dulces
+    second: {fileID: 2800000, guid: 676095af8668e554d9d23e9a532d5861, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: envuelto
+    second: {fileID: 2800000, guid: 30b68c4e742d4f84fb4e36e8c076c167, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: frijol
+    second: {fileID: 2800000, guid: 03f311339b5627243b305a28606c8b5d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: huevo1
+    second: {fileID: 2800000, guid: e6171afe179d3884285e36181f6c6096, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: huevo2
+    second: {fileID: 2800000, guid: 80e8ead2a0f009043bd881c5bf59e514, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: huevo3
+    second: {fileID: 2800000, guid: 4c21077409b8ed24a9d4ce5d065f6809, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: jesus
+    second: {fileID: 2800000, guid: 2b6b8be5d83c34749bc75e9a1a02dad3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: madera
+    second: {fileID: 2800000, guid: 1f906f0041eb05143a24c202e9e095cc, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: maiz
+    second: {fileID: 2800000, guid: 2b8f3da2c5de00a4a9da5e5e6b880eba, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: mantecada
+    second: {fileID: 2800000, guid: cb1aafcf6a5257b4f9defb6149936b5e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: mat_basket_Base_Coolor
+    second: {fileID: 2800000, guid: 81f1507907c4d4a4da3596d8e6dff44f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: mogolla
+    second: {fileID: 2800000, guid: 7a7b5df4b4b055341899134f31acd7bd, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: naranja
+    second: {fileID: 2800000, guid: fd16cf5f2ce4bea4f86b506b47d036e6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: panYuca
+    second: {fileID: 2800000, guid: 68f5955adbc03e1468c33b859a43da94, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: pony
+    second: {fileID: 2800000, guid: 957818fd0ff0ff342b66fff34832846c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: scale_LP_merleg_BaseColor
+    second: {fileID: 2800000, guid: d9207ef1d357c214cbce33a389f93783, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: shopping-basket-texture
+    second: {fileID: 2800000, guid: f2eef0842ce213b469dd94f2fa036254, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: textRana
+    second: {fileID: 2800000, guid: f4089793ab9ed9c4c93fb65fc0b5f571, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: textmesa
+    second: {fileID: 2800000, guid: 711b1cff64c9de748b0b860f92401344, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: velas
+    second: {fileID: 2800000, guid: b44f1df262ea1df4581c32e85cb9949e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: virgen
+    second: {fileID: 2800000, guid: a15d549c8849ffb40986f0aafa226d30, type: 3}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

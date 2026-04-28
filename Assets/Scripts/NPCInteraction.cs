@@ -12,11 +12,31 @@ public class AnimationStep
     public float duration;
 }
 
+// ── NUEVO ──────────────────────────────────────────────
+[System.Serializable]
+public class SpawnableItem
+{
+    public GameObject objectToMove;
+    public Transform spawnPoint;
+    [Tooltip("Segundos desde el inicio de la animación")]
+    public float spawnDelay;
+}
+// ───────────────────────────────────────────────────────
+
 public class NPCInteraction : MonoBehaviour
 {
     [Header("Animación NPC")]
     public Animator npcAnimator;
     public List<AnimationStep> animationSequence = new List<AnimationStep>();
+
+    // ── NUEVO ──────────────────────────────────────────
+    [Header("Audio")]
+    public AudioSource questAudioSource;
+
+    [Header("Objetos a Spawnear")]
+    public SpawnableItem item1;
+    public SpawnableItem item2;
+    // ───────────────────────────────────────────────────
 
     private bool isInteracting = false;
 
@@ -33,11 +53,19 @@ public class NPCInteraction : MonoBehaviour
     private Vector3 originalVelocity;
     private Vector3 originalAngularVelocity;
 
+    // ── NUEVO ──────────────────────────────────────────
+    private GameObject dialogSistem;
+    // ───────────────────────────────────────────────────
+
     void Start()
     {
         if (npcAnimator != null)
             npcAnimator.applyRootMotion = false;
 
+        // ── NUEVO: buscar DialogSistem hermano por nombre ──
+        if (transform.parent != null)
+            dialogSistem = transform.parent.Find("DialogSistem")?.gameObject;
+        // ───────────────────────────────────────────────────
     }
 
     void OnTriggerEnter(Collider other)
@@ -81,8 +109,26 @@ public class NPCInteraction : MonoBehaviour
     {
         isInteracting = true;
 
+        // ── NUEVO: bloquear diálogos ───────────────────────
+        if (dialogSistem != null)
+            dialogSistem.SetActive(false);
+        // ───────────────────────────────────────────────────
+
         // 🔒 BLOQUEAR
         LockPlayer();
+
+        // ── NUEVO: audio ───────────────────────────────────
+        if (questAudioSource != null)
+            questAudioSource.Play();
+        // ───────────────────────────────────────────────────
+
+        // ── NUEVO: lanzar spawns con sus delays independientes
+        if (item1.objectToMove != null && item1.spawnPoint != null)
+            StartCoroutine(SpawnWithDelay(item1));
+
+        if (item2.objectToMove != null && item2.spawnPoint != null)
+            StartCoroutine(SpawnWithDelay(item2));
+        // ───────────────────────────────────────────────────
 
         // 🎭 ANIMACIONES
         if (npcAnimator != null)
@@ -97,11 +143,27 @@ public class NPCInteraction : MonoBehaviour
             }
         }
 
-
         // 🔓 DESBLOQUEAR
         RestorePlayer();
         isInteracting = false;
+
+        // ── NUEVO: reactivar diálogos y desactivar quest permanentemente
+        if (dialogSistem != null)
+            dialogSistem.SetActive(true);
+
+        gameObject.SetActive(false);
+        // ───────────────────────────────────────────────────
     }
+
+    // ── NUEVO ──────────────────────────────────────────────
+    IEnumerator SpawnWithDelay(SpawnableItem item)
+    {
+        yield return new WaitForSeconds(item.spawnDelay);
+        item.objectToMove.transform.position = item.spawnPoint.position;
+        item.objectToMove.transform.rotation = item.spawnPoint.rotation;
+        item.objectToMove.SetActive(true);
+    }
+    // ───────────────────────────────────────────────────────
 
     void LockPlayer()
     {

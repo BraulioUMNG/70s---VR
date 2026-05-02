@@ -36,6 +36,7 @@ public class NPCInteraction : MonoBehaviour
     [Header("Objetos a Spawnear")]
     public SpawnableItem item1;
     public SpawnableItem item2;
+
     // ───────────────────────────────────────────────────
 
     private bool isInteracting = false;
@@ -189,6 +190,7 @@ public class NPCInteraction : MonoBehaviour
             playerRigidbody.linearVelocity = Vector3.zero;
             playerRigidbody.angularVelocity = Vector3.zero;
         }
+
     }
 
     void RestorePlayer()

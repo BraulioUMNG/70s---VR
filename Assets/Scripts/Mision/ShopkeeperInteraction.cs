@@ -1,17 +1,7 @@
 // ════════════════════════════════════════════════════════════════════
-//  ShopkeeperInteraction.cs  —  NPC: El Señor de la Tienda
-//
-//  CASO A — Jugador llega SIN plata (fase QuestGiven):
-//    El tendero hace una animación de rechazo y dice que vuelva con la plata.
-//    No spawnea nada. El trigger se mantiene activo para el reintento.
-//
-//  CASO B — Jugador llega CON plata (fase MoneyCollected):
-//    El tendero hace su animación de atención, suena el audio de venta,
-//    spawnea los artículos del mercado y avanza la misión a GroceriesGiven.
-//    El trigger se desactiva: la transacción ya ocurrió.
-//
-//  NOTA: Requiere MissionState.cs en el proyecto.
+//  ShopkeeperInteraction.cs — solo Collider Trigger (CORREGIDO)
 // ════════════════════════════════════════════════════════════════════
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,24 +12,19 @@ public class ShopkeeperInteraction : MonoBehaviour
     [Header("Animación NPC")]
     public Animator npcAnimator;
 
-    [Header("── Caso A: Jugador trae la plata → Venta ─────")]
-    public AudioSource saleAudioSource;
-    public List<AnimationStep> saleAnimationSequence = new List<AnimationStep>();
-
-    [Header("── Caso B: Jugador sin plata → Rechazo ───────")]
+    [Header("── Caso A: Jugador SIN plata → Rechazo ─────")]
     public AudioSource rejectAudioSource;
     public List<AnimationStep> rejectAnimationSequence = new List<AnimationStep>();
+
+    [Header("── Caso B: Jugador CON plata → Venta ───────")]
+    public AudioSource saleAudioSource;
+    public List<AnimationStep> saleAnimationSequence = new List<AnimationStep>();
 
     [Header("── Objetos a Spawnear ────────────────────────")]
     public SpawnableItem grocery1;
     public SpawnableItem grocery2;
 
-    // 🔵 NUEVO: Proximidad
-    [Header("Proximidad alternativa")]
-    public float interactionDistance = 3f;
-    private Transform playerTransform;
-    private bool hasTriggeredByDistance = false;
-
+    // ── Control interno ───────────────────────────────────────────────
     private bool isInteracting = false;
 
     private FirstPersonController playerController;
@@ -54,6 +39,7 @@ public class ShopkeeperInteraction : MonoBehaviour
 
     private GameObject dialogSistem;
 
+    // ── Init ──────────────────────────────────────────────────────────
     void Start()
     {
         if (npcAnimator != null)
@@ -61,50 +47,27 @@ public class ShopkeeperInteraction : MonoBehaviour
 
         if (transform.parent != null)
             dialogSistem = transform.parent.Find("DialogSistem")?.gameObject;
-
-        // 🔵 Buscar jugador automáticamente
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-            playerTransform = player.transform;
     }
 
-    // 🔵 DETECCIÓN POR DISTANCIA (backup)
-    void Update()
-    {
-        if (playerTransform == null || isInteracting || hasTriggeredByDistance) return;
-
-        float distance = Vector3.Distance(transform.position, playerTransform.position);
-
-        if (distance <= interactionDistance)
-        {
-            hasTriggeredByDistance = true;
-            Debug.Log("[Tendero] Activado por proximidad");
-
-            HandleInteraction(playerTransform.gameObject);
-        }
-    }
-
-    // 🔵 TRIGGER ORIGINAL (simplificado)
+    // ── Trigger ───────────────────────────────────────────────────────
     void OnTriggerEnter(Collider other)
     {
-        if (!other.CompareTag("Player")) return;
-
-        Debug.Log("[Tendero] Activado por trigger");
+        if (!other.CompareTag("Player") || isInteracting) return;
 
         HandleInteraction(other.gameObject);
     }
 
-    // 🔵 LÓGICA CENTRAL (extraída)
+    // ── Lógica de decisión ────────────────────────────────────────────
     void HandleInteraction(GameObject player)
     {
-        if (isInteracting) return;
-
+        // Misión no iniciada: el tendero ignora al jugador
         if (MissionState.CurrentPhase == MissionState.Phase.Idle)
         {
             Debug.Log("[Tendero] Misión no iniciada.");
             return;
         }
 
+        // Transacción ya hecha: el tendero ignora al jugador
         if (MissionState.CurrentPhase == MissionState.Phase.GroceriesGiven ||
             MissionState.CurrentPhase == MissionState.Phase.MissionComplete)
         {
@@ -114,54 +77,52 @@ public class ShopkeeperInteraction : MonoBehaviour
 
         InitializePlayer(player);
 
-        if (!MissionState.HasMoney)
+        // Sin plata → rechazo
+        if (MissionState.CurrentPhase == MissionState.Phase.QuestGiven)
         {
             Debug.Log("[Tendero] SIN plata → rechazo");
             StartCoroutine(RejectSequence());
             return;
         }
 
-        Debug.Log("[Tendero] CON plata → venta");
-        StartCoroutine(SaleSequence());
+        // Con plata → venta
+        if (MissionState.CurrentPhase == MissionState.Phase.MoneyCollected)
+        {
+            Debug.Log("[Tendero] CON plata → venta");
+            StartCoroutine(SaleSequence());
+        }
     }
 
+    // ── Secuencia de rechazo ──────────────────────────────────────────
     IEnumerator RejectSequence()
     {
         isInteracting = true;
-
         if (dialogSistem != null) dialogSistem.SetActive(false);
-
         LockPlayer();
 
-        if (rejectAudioSource != null)
-            rejectAudioSource.Play();
-
+        if (rejectAudioSource != null) rejectAudioSource.Play();
         yield return StartCoroutine(PlayAnimationSequence(rejectAnimationSequence));
 
         RestorePlayer();
         isInteracting = false;
-
         if (dialogSistem != null) dialogSistem.SetActive(true);
 
-        hasTriggeredByDistance = false; // permite reintento
-
+        // isInteracting vuelve a false → el próximo OnTriggerEnter
+        // funcionará normal cuando el jugador salga y vuelva con plata
         Debug.Log("[Tendero] Rechazo completado.");
     }
 
+    // ── Secuencia de venta ────────────────────────────────────────────
     IEnumerator SaleSequence()
     {
         isInteracting = true;
-
         if (dialogSistem != null) dialogSistem.SetActive(false);
-
         LockPlayer();
 
-        if (saleAudioSource != null)
-            saleAudioSource.Play();
+        if (saleAudioSource != null) saleAudioSource.Play();
 
         if (grocery1.objectToMove != null && grocery1.spawnPoint != null)
             StartCoroutine(SpawnWithDelay(grocery1));
-
         if (grocery2.objectToMove != null && grocery2.spawnPoint != null)
             StartCoroutine(SpawnWithDelay(grocery2));
 
@@ -169,27 +130,34 @@ public class ShopkeeperInteraction : MonoBehaviour
 
         RestorePlayer();
         isInteracting = false;
-
         if (dialogSistem != null) dialogSistem.SetActive(true);
 
         MissionState.SetGroceriesGiven();
-
         gameObject.SetActive(false);
-
         Debug.Log("[Tendero] Venta completada.");
     }
 
-    // 🔵 AHORA USA TRIGGERS
+    // ── Helpers ───────────────────────────────────────────────────────
     IEnumerator PlayAnimationSequence(List<AnimationStep> sequence)
     {
-        if (npcAnimator == null) yield break;
+        if (npcAnimator == null)
+        {
+            Debug.LogWarning("[Tendero] npcAnimator es null. Asígnalo en el Inspector.");
+            yield break;
+        }
+
+        if (sequence == null || sequence.Count == 0)
+        {
+            Debug.LogWarning("[Tendero] La secuencia de animación está vacía.");
+            yield break;
+        }
 
         foreach (AnimationStep step in sequence)
         {
             if (!string.IsNullOrEmpty(step.stateName))
             {
-                Debug.Log("Trigger lanzado: " + step.stateName);
-                npcAnimator.SetTrigger(step.stateName);
+                Debug.Log("[Tendero] Reproduciendo: " + step.stateName);
+                npcAnimator.Play(step.stateName, 0, 0f);
                 yield return new WaitForSeconds(step.duration);
             }
         }
@@ -228,7 +196,6 @@ public class ShopkeeperInteraction : MonoBehaviour
         playerController = player.GetComponent<FirstPersonController>();
         moveProvider = player.GetComponent<DynamicMoveProvider>();
         playerRigidbody = player.GetComponent<Rigidbody>();
-        playerTransform = player.transform;
         SaveState();
     }
 

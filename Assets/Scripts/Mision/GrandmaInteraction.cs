@@ -43,6 +43,13 @@ public class GrandmaInteraction : MonoBehaviour
 
     [Tooltip("Animaciones de la abuela al recibir el mercado.\nAgrega un elemento por cada estado del Animator.")]
     public List<AnimationStep> thankAnimationSequence = new List<AnimationStep>();
+    // ── FASE 3: NO TRAJO EL MANDADO ───────────────────────────
+    [Header("── Fase 3: No trajo el mandado ─────────────")]
+    [Tooltip("Audio cuando el jugador vuelve sin el mercado")]
+    public AudioSource scoldAudioSource;
+
+    [Tooltip("Animaciones de regaño")]
+    public List<AnimationStep> scoldAnimationSequence = new List<AnimationStep>();
 
     // ── OBJETOS ───────────────────────────────────────────────────────
     [Header("── Objetos a Spawnear ────────────────────────")]
@@ -100,6 +107,15 @@ public class GrandmaInteraction : MonoBehaviour
             StartCoroutine(ThankSequence());
             return;
         }
+        // ── FASE 3: VOLVIÓ SIN EL MERCADO ───────────────────────
+        if (MissionState.CurrentPhase == MissionState.Phase.MoneyCollected)
+        {
+            Debug.Log("[Abuela] El jugador volvió sin el mercado → regaño.");
+            InitializePlayer(other.gameObject);
+            StartCoroutine(ScoldSequence());
+            return;
+        }
+
 
         // ── ESTADOS INTERMEDIOS: feedback sin bloquear al jugador ──────
         if (MissionState.CurrentPhase == MissionState.Phase.QuestGiven)
@@ -170,6 +186,29 @@ public class GrandmaInteraction : MonoBehaviour
         // Desactiva el trigger de la abuela permanentemente: misión terminada
         gameObject.SetActive(false);
         Debug.Log("[Abuela] Misión completada. Trigger desactivado.");
+    }
+    // ── SECUENCIA DE REGAÑO (Fase 3) ─────────────────────────
+    IEnumerator ScoldSequence()
+    {
+        isInteracting = true;
+
+        if (dialogSistem != null) dialogSistem.SetActive(false);
+
+        LockPlayer();
+
+        // Audio de regaño
+        if (scoldAudioSource != null)
+            scoldAudioSource.Play();
+
+        // Animación de regaño
+        yield return StartCoroutine(PlayAnimationSequence(scoldAnimationSequence));
+
+        RestorePlayer();
+        isInteracting = false;
+
+        if (dialogSistem != null) dialogSistem.SetActive(true);
+
+        Debug.Log("[Abuela] El jugador fue regañado por no traer el mandado.");
     }
 
     // ── HELPERS ───────────────────────────────────────────────────────

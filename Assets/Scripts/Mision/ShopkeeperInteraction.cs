@@ -193,9 +193,46 @@ public class ShopkeeperInteraction : MonoBehaviour
     IEnumerator SpawnWithDelay(SpawnableItem item)
     {
         yield return new WaitForSeconds(item.spawnDelay);
+
+        Rigidbody rb = item.objectToMove.GetComponent<Rigidbody>();
+        RigidbodyInterpolation originalInterpolation = RigidbodyInterpolation.None;
+
+        if (rb != null)
+        {
+            originalInterpolation = rb.interpolation;
+
+            // Desactiva interpolación ANTES de mover: evita que el interpolador
+            // recuerde la posición anterior (bajo el mapa) y arrastre el objeto hacia allá
+            rb.interpolation   = RigidbodyInterpolation.None;
+            rb.isKinematic     = true;
+            rb.linearVelocity  = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.Sleep();
+        }
+
         item.objectToMove.transform.position = item.spawnPoint.position;
         item.objectToMove.transform.rotation = item.spawnPoint.rotation;
         item.objectToMove.SetActive(true);
+
+        // Limpia de nuevo post-activación
+        if (rb != null)
+        {
+            rb.linearVelocity  = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        // Espera 2 frames para que Unity registre la nueva posición sin interpolación
+        yield return null;
+        yield return null;
+
+        // Devuelve todo al estado original
+        if (rb != null)
+        {
+            rb.isKinematic  = false;
+            rb.interpolation = originalInterpolation; // Restaura Interpolate si lo tenía
+            rb.WakeUp();
+        }
+
         Debug.Log($"[Tendero] Spawneado: {item.objectToMove.name}");
     }
 

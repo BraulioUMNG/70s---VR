@@ -3,6 +3,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 [RequireComponent(typeof(XRGrabInteractable))]
+[RequireComponent(typeof(AudioSource))]
 public class AudioProtagonista : MonoBehaviour
 {
     [Header("Audio")]
@@ -13,13 +14,9 @@ public class AudioProtagonista : MonoBehaviour
 
     void Start()
     {
-        // Busca AudioSource en la escena o crea uno
-        audioSource = FindObjectOfType<AudioSource>();
-        if (audioSource == null)
-        {
-            GameObject go = new GameObject("AudioManager");
-            audioSource = go.AddComponent<AudioSource>();
-        }
+        audioSource = GetComponent<AudioSource>();
+        audioSource.spatialBlend = 0f; // 2D — suena igual sin importar distancia
+        audioSource.volume = 1f;
 
         var interactable = GetComponent<XRGrabInteractable>();
         interactable.selectEntered.AddListener(OnAgarrar);

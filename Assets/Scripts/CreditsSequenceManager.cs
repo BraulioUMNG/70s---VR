@@ -1,11 +1,4 @@
-﻿// ════════════════════════════════════════════════════════════════════
-//  CreditsSequenceManager.cs
-//  Al completar la misión:
-//    1. Espera un delay configurable
-//    2. Teletransporta al jugador a la sala de créditos
-//    3. Bloquea el movimiento (conserva rotación de cámara)
-// ════════════════════════════════════════════════════════════════════
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class CreditsSequenceManager : MonoBehaviour
@@ -22,15 +15,14 @@ public class CreditsSequenceManager : MonoBehaviour
     [SerializeField] private Behaviour[] vrMovementComponents;
 
     [Header("── Sala de créditos ──────────────────────")]
-    [Tooltip("GameObject vacío orientado mirando hacia la pantalla del proyector")]
     [SerializeField] private Transform creditsSpawnPoint;
 
     [Header("── Tiempos ───────────────────────────────")]
-    [SerializeField] private float delayBeforeTeleport = 5f;
+    [SerializeField] private float delayBeforeFade = 2f; // Espera antes del fade
 
     // ─────────────────────────────────────────────────────────────────
 
-    private void OnEnable() => MissionState.OnMissionComplete += HandleMissionComplete;
+    private void OnEnable()  => MissionState.OnMissionComplete += HandleMissionComplete;
     private void OnDisable() => MissionState.OnMissionComplete -= HandleMissionComplete;
 
     private void HandleMissionComplete()
@@ -41,11 +33,26 @@ public class CreditsSequenceManager : MonoBehaviour
 
     private IEnumerator CreditsSequence()
     {
-        Debug.Log($"[CreditsSequenceManager] Esperando {delayBeforeTeleport}s...");
-        yield return new WaitForSeconds(delayBeforeTeleport);
+        // Espera un momento antes de arrancar el fade
+        Debug.Log($"[CreditsSequenceManager] Esperando {delayBeforeFade}s antes del fade...");
+        yield return new WaitForSeconds(delayBeforeFade);
 
-        TeleportPlayer();
-        LockMovement();
+        // Fade a negro → TP → fade de vuelta
+        if (FadeToBlack.Instance != null)
+        {
+            yield return StartCoroutine(FadeToBlack.Instance.Fade(() =>
+            {
+                TeleportPlayer();
+                LockMovement();
+            }));
+        }
+        else
+        {
+            // Sin fade, hace el TP directo
+            Debug.LogWarning("[CreditsSequenceManager] FadeToBlack no encontrado, TP directo.");
+            TeleportPlayer();
+            LockMovement();
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────

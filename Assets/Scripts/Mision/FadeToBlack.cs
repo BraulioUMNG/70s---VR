@@ -17,9 +17,17 @@ public class FadeToBlack : MonoBehaviour
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
 
-        // Empieza transparente
         if (fadeCanvasGroup != null)
             fadeCanvasGroup.alpha = 0f;
+
+        // Configura el canvas para VR automáticamente
+        var canvas = fadeCanvasGroup?.GetComponentInParent<Canvas>();
+        if (canvas != null && Camera.main != null)
+        {
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = Camera.main;
+            canvas.planeDistance = 0.5f;
+        }
     }
 
     // Llama esto: yield return StartCoroutine(FadeToBlack.Instance.Fade(...))

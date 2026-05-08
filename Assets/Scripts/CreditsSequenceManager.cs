@@ -88,19 +88,17 @@ public class CreditsSequenceManager : MonoBehaviour
         bool isVR = playerModeManager != null && playerModeManager.IsVRMode;
         Behaviour[] toDisable = isVR ? vrMovementComponents : desktopMovementComponents;
 
-        if (toDisable == null || toDisable.Length == 0)
-        {
-            Debug.LogWarning("[CreditsSequenceManager] Sin componentes de movimiento asignados.");
-            return;
-        }
+        if (toDisable == null || toDisable.Length == 0) return;
 
         foreach (Behaviour comp in toDisable)
         {
-            if (comp != null)
-            {
-                comp.enabled = false;
-                Debug.Log($"[CreditsSequenceManager] Deshabilitado: {comp.GetType().Name}");
-            }
+            // No desactiva el PauseManager ni el FadeToBlack
+            if (comp == null) continue;
+            if (comp is PauseManager) continue;
+            if (comp is FadeToBlack) continue;
+
+            comp.enabled = false;
+            Debug.Log($"[CreditsSequenceManager] Deshabilitado: {comp.GetType().Name}");
         }
     }
 }

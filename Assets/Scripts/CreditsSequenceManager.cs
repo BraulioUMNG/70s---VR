@@ -18,7 +18,7 @@ public class CreditsSequenceManager : MonoBehaviour
     [SerializeField] private Transform creditsSpawnPoint;
 
     [Header("── Tiempos ───────────────────────────────")]
-    [SerializeField] private float delayBeforeFade = 2f; // Espera antes del fade
+    [SerializeField] private float delayBeforeFade = 2f;
 
     // ─────────────────────────────────────────────────────────────────
 
@@ -33,23 +33,26 @@ public class CreditsSequenceManager : MonoBehaviour
 
     private IEnumerator CreditsSequence()
     {
-        // Espera un momento antes de arrancar el fade
-        Debug.Log($"[CreditsSequenceManager] Esperando {delayBeforeFade}s antes del fade...");
         yield return new WaitForSeconds(delayBeforeFade);
 
-        // Fade a negro → TP → fade de vuelta
-        if (FadeToBlack.Instance != null)
+        if (SceneFader.Instance != null)
         {
-            yield return StartCoroutine(FadeToBlack.Instance.Fade(() =>
-            {
-                TeleportPlayer();
-                LockMovement();
-            }));
+            // Fade a beige
+            yield return StartCoroutine(SceneFader.Instance.FadeOut());
+
+            // Mientras está cubierto hace el TP
+            TeleportPlayer();
+            LockMovement();
+
+            // Pequeña pausa para que se estabilice
+            yield return new WaitForSeconds(0.3f);
+
+            // Fade de vuelta
+            yield return StartCoroutine(SceneFader.Instance.FadeIn());
         }
         else
         {
-            // Sin fade, hace el TP directo
-            Debug.LogWarning("[CreditsSequenceManager] FadeToBlack no encontrado, TP directo.");
+            Debug.LogWarning("[CreditsSequenceManager] SceneFader no encontrado, TP directo.");
             TeleportPlayer();
             LockMovement();
         }
@@ -92,10 +95,9 @@ public class CreditsSequenceManager : MonoBehaviour
 
         foreach (Behaviour comp in toDisable)
         {
-            // No desactiva el PauseManager ni el FadeToBlack
             if (comp == null) continue;
             if (comp is PauseManager) continue;
-            if (comp is FadeToBlack) continue;
+            if (comp is SceneFader) continue;
 
             comp.enabled = false;
             Debug.Log($"[CreditsSequenceManager] Deshabilitado: {comp.GetType().Name}");

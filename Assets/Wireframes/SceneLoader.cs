@@ -9,24 +9,31 @@ public class SceneLoader : MonoBehaviour
     public Sprite imagenPatio;
     public Sprite imagenPueblo;
 
-    public void IrAPatioDeJuegos()
-    {
-        StartCoroutine(CargarEscena("Patio de juegos", imagenPatio));
-    }
-    
     public void IrAlPueblo()
     {
-        StartCoroutine(CargarEscena("Principal VR - PC", imagenPueblo));
+        StartCoroutine(IrAlPuebloConFade());
     }
 
-    IEnumerator CargarEscena(string nombreEscena, Sprite imagen)
+    IEnumerator IrAlPuebloConFade()
     {
-        // Fade con imagen
-        yield return StartCoroutine(fadeManager.FadeOut(imagen));
+        // Muestra imagen de carga primero
+        yield return StartCoroutine(fadeManager.FadeOut(imagenPueblo));
+        yield return new WaitForSeconds(2f);
 
-        // Espera opcional para que se vea la imagen
-        yield return new WaitForSeconds(1.5f);
+        // Luego fade negro y carga
+        SceneFader.Instance.LoadScene("Principal VR - PC");
+    }
 
-        SceneManager.LoadScene(nombreEscena);
+    public void IrAPatioDeJuegos()
+    {
+        StartCoroutine(IrAPatioConFade());
+    }
+
+    IEnumerator IrAPatioConFade()
+    {
+        yield return StartCoroutine(fadeManager.FadeOut(imagenPatio));
+        yield return new WaitForSeconds(2f);
+
+        SceneFader.Instance.LoadScene("Patio de juegos");
     }
 }

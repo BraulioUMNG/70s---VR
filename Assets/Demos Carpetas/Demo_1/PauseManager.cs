@@ -217,7 +217,7 @@ public class PauseManager : MonoBehaviour
     public void OnMainMenuButton()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(mainMenuSceneName);
+        SceneFader.Instance.LoadScene(mainMenuSceneName);
     }
 
 

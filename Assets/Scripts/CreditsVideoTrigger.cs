@@ -72,7 +72,6 @@ public class CreditsVideoTrigger : MonoBehaviour
 
     private void OnVideoFinished(VideoPlayer vp)
     {
-        Debug.Log("[CreditsVideoTrigger] Video terminado. Cargando menú principal...");
-        SceneManager.LoadScene(mainMenuScene);
+        SceneFader.Instance.LoadScene(mainMenuScene);
     }
 }

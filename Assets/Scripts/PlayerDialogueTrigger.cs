@@ -10,6 +10,13 @@ public class PlayerDialogueTrigger : MonoBehaviour
 
     private bool _triggered = false;
 
+    void Start()
+    {
+        // Registra el AudioSource en el manager
+        if (playerAudioSource != null && PlayerDialogueManager.Instance != null)
+            PlayerDialogueManager.Instance.SetAudioSource(playerAudioSource);
+    }
+
     void OnTriggerEnter(Collider other)
     {
         if (_triggered) return;
@@ -17,14 +24,11 @@ public class PlayerDialogueTrigger : MonoBehaviour
 
         _triggered = true;
 
-        if (playerAudioSource != null && dialogueClip != null)
-        {
-            playerAudioSource.PlayOneShot(dialogueClip);
-            Debug.Log($"[PlayerDialogue] Reproduciendo: {dialogueClip.name}");
-        }
+        if (PlayerDialogueManager.Instance != null)
+            PlayerDialogueManager.Instance.PlayDialogue(dialogueClip);
         else
-        {
-            Debug.LogWarning("[PlayerDialogue] Falta AudioSource o AudioClip");
-        }
+            playerAudioSource?.PlayOneShot(dialogueClip);
+
+        Debug.Log($"[PlayerDialogue] Solicitado: {dialogueClip?.name}");
     }
 }

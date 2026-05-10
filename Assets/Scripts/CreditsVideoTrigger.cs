@@ -72,6 +72,11 @@ public class CreditsVideoTrigger : MonoBehaviour
 
     private void OnVideoFinished(VideoPlayer vp)
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        Time.timeScale = 1f;
+
+        Debug.Log("[CreditsVideoTrigger] Video terminado. Cargando menú principal...");
         SceneFader.Instance.LoadScene(mainMenuScene);
     }
 }

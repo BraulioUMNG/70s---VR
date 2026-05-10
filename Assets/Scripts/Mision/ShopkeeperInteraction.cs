@@ -1,5 +1,5 @@
 // ════════════════════════════════════════════════════════════════════
-//  ShopkeeperInteraction.cs — solo Collider Trigger (CORREGIDO)
+//  ShopkeeperInteraction.cs — solo Collider Trigger
 // ════════════════════════════════════════════════════════════════════
 
 using System.Collections;
@@ -12,12 +12,20 @@ public class ShopkeeperInteraction : MonoBehaviour
     [Header("Animación NPC")]
     public Animator npcAnimator;
 
+    [Header("Audio")]
+    [Tooltip("El único AudioSource del tendero. Se le cambia el clip según el caso.")]
+    public AudioSource npcAudioSource;
+
+    [Tooltip("Audio Caso A — jugador sin plata, rechazo")]
+    public AudioClip rejectClip;
+
+    [Tooltip("Audio Caso B — jugador con plata, venta")]
+    public AudioClip saleClip;
+
     [Header("── Caso A: Jugador SIN plata → Rechazo ─────")]
-    public AudioSource rejectAudioSource;
     public List<AnimationStep> rejectAnimationSequence = new List<AnimationStep>();
 
     [Header("── Caso B: Jugador CON plata → Venta ───────")]
-    public AudioSource saleAudioSource;
     public List<AnimationStep> saleAnimationSequence = new List<AnimationStep>();
 
     [Header("── Objetos a Spawnear ────────────────────────")]
@@ -28,12 +36,12 @@ public class ShopkeeperInteraction : MonoBehaviour
     private bool isInteracting = false;
 
     private FirstPersonController playerController;
-    private DynamicMoveProvider moveProvider;
-    private Rigidbody playerRigidbody;
+    private DynamicMoveProvider   moveProvider;
+    private Rigidbody             playerRigidbody;
 
-    private bool originalPlayerCanMove;
-    private bool originalHeadBob;
-    private bool moveProviderWasEnabled;
+    private bool    originalPlayerCanMove;
+    private bool    originalHeadBob;
+    private bool    moveProviderWasEnabled;
     private Vector3 originalVelocity;
     private Vector3 originalAngularVelocity;
 
@@ -60,14 +68,12 @@ public class ShopkeeperInteraction : MonoBehaviour
     // ── Lógica de decisión ────────────────────────────────────────────
     void HandleInteraction(GameObject player)
     {
-        // Misión no iniciada: el tendero ignora al jugador
         if (MissionState.CurrentPhase == MissionState.Phase.Idle)
         {
             Debug.Log("[Tendero] Misión no iniciada.");
             return;
         }
 
-        // Transacción ya hecha: el tendero ignora al jugador
         if (MissionState.CurrentPhase == MissionState.Phase.GroceriesGiven ||
             MissionState.CurrentPhase == MissionState.Phase.MissionComplete)
         {
@@ -77,7 +83,6 @@ public class ShopkeeperInteraction : MonoBehaviour
 
         InitializePlayer(player);
 
-        // Sin plata → rechazo
         if (MissionState.CurrentPhase == MissionState.Phase.QuestGiven)
         {
             Debug.Log("[Tendero] SIN plata → rechazo");
@@ -85,7 +90,6 @@ public class ShopkeeperInteraction : MonoBehaviour
             return;
         }
 
-        // Con plata → venta
         if (MissionState.CurrentPhase == MissionState.Phase.MoneyCollected)
         {
             Debug.Log("[Tendero] CON plata → venta");
@@ -100,15 +104,12 @@ public class ShopkeeperInteraction : MonoBehaviour
         if (dialogSistem != null) dialogSistem.SetActive(false);
         LockPlayer();
 
-        if (rejectAudioSource != null) rejectAudioSource.Play();
+        PlayClip(rejectClip);
         yield return StartCoroutine(PlayAnimationSequence(rejectAnimationSequence));
 
         RestorePlayer();
         isInteracting = false;
         if (dialogSistem != null) dialogSistem.SetActive(true);
-
-        // isInteracting vuelve a false → el próximo OnTriggerEnter
-        // funcionará normal cuando el jugador salga y vuelva con plata
         Debug.Log("[Tendero] Rechazo completado.");
     }
 
@@ -119,7 +120,7 @@ public class ShopkeeperInteraction : MonoBehaviour
         if (dialogSistem != null) dialogSistem.SetActive(false);
         LockPlayer();
 
-        if (saleAudioSource != null) saleAudioSource.Play();
+        PlayClip(saleClip);
 
         if (grocery1.objectToMove != null && grocery1.spawnPoint != null)
             StartCoroutine(SpawnWithDelay(grocery1));
@@ -135,6 +136,26 @@ public class ShopkeeperInteraction : MonoBehaviour
         MissionState.SetGroceriesGiven();
         gameObject.SetActive(false);
         Debug.Log("[Tendero] Venta completada.");
+    }
+
+    // ── Helper de audio ───────────────────────────────────────────────
+    void PlayClip(AudioClip clip)
+    {
+        if (npcAudioSource == null)
+        {
+            Debug.LogWarning("[Tendero] npcAudioSource no asignado en el Inspector.");
+            return;
+        }
+
+        if (clip == null)
+        {
+            Debug.LogWarning("[Tendero] El AudioClip para este caso no está asignado.");
+            return;
+        }
+
+        npcAudioSource.Stop();
+        npcAudioSource.clip = clip;
+        npcAudioSource.Play();
     }
 
     // ── Helpers ───────────────────────────────────────────────────────
@@ -194,8 +215,8 @@ public class ShopkeeperInteraction : MonoBehaviour
     void InitializePlayer(GameObject player)
     {
         playerController = player.GetComponent<FirstPersonController>();
-        moveProvider = player.GetComponent<DynamicMoveProvider>();
-        playerRigidbody = player.GetComponent<Rigidbody>();
+        moveProvider     = player.GetComponent<DynamicMoveProvider>();
+        playerRigidbody  = player.GetComponent<Rigidbody>();
         SaveState();
     }
 
@@ -204,12 +225,12 @@ public class ShopkeeperInteraction : MonoBehaviour
         if (playerController != null)
         {
             originalPlayerCanMove = playerController.playerCanMove;
-            originalHeadBob = playerController.enableHeadBob;
+            originalHeadBob       = playerController.enableHeadBob;
         }
-        if (moveProvider != null) moveProviderWasEnabled = moveProvider.enabled;
+        if (moveProvider    != null) moveProviderWasEnabled  = moveProvider.enabled;
         if (playerRigidbody != null)
         {
-            originalVelocity = playerRigidbody.linearVelocity;
+            originalVelocity        = playerRigidbody.linearVelocity;
             originalAngularVelocity = playerRigidbody.angularVelocity;
         }
     }
@@ -221,10 +242,10 @@ public class ShopkeeperInteraction : MonoBehaviour
             playerController.playerCanMove = false;
             playerController.enableHeadBob = false;
         }
-        if (moveProvider != null) moveProvider.enabled = false;
+        if (moveProvider    != null) moveProvider.enabled = false;
         if (playerRigidbody != null)
         {
-            playerRigidbody.linearVelocity = Vector3.zero;
+            playerRigidbody.linearVelocity  = Vector3.zero;
             playerRigidbody.angularVelocity = Vector3.zero;
         }
     }
@@ -236,10 +257,10 @@ public class ShopkeeperInteraction : MonoBehaviour
             playerController.playerCanMove = originalPlayerCanMove;
             playerController.enableHeadBob = originalHeadBob;
         }
-        if (moveProvider != null) moveProvider.enabled = moveProviderWasEnabled;
+        if (moveProvider    != null) moveProvider.enabled         = moveProviderWasEnabled;
         if (playerRigidbody != null)
         {
-            playerRigidbody.linearVelocity = originalVelocity;
+            playerRigidbody.linearVelocity  = originalVelocity;
             playerRigidbody.angularVelocity = originalAngularVelocity;
         }
     }

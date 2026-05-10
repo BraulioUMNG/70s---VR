@@ -16,6 +16,9 @@
 //        La plata debe tener CollectibleItem.cs con la llamada a
 //        MissionState.SetMoneyCollected().
 // ════════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════════
+//  GrandmaInteraction.cs  —  NPC: La Abuela
+// ════════════════════════════════════════════════════════════════════
 
 using System.Collections;
 using System.Collections.Generic;
@@ -24,45 +27,44 @@ using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
 
 public class GrandmaInteraction : MonoBehaviour
 {
-    // ── REFERENCIA AL ANIMATOR ────────────────────────────────────────
+    // ── ANIMADOR NPC ──────────────────────────────────────────────────
     [Header("Animación NPC")]
     public Animator npcAnimator;
 
-    // ── FASE 1: ENCARGO ───────────────────────────────────────────────
-    [Header("── Fase 1: Encargo del mandado ──────────────")]
-    [Tooltip("Audio que suena cuando la abuela da el encargo\n(ej: 'Mijo, vaya al mercado...')")]
-    public AudioSource questAudioSource;
+    // ── AUDIO ─────────────────────────────────────────────────────────
+    [Header("Audio")]
+    [Tooltip("El único AudioSource de la abuela. Se le cambia el clip según la fase.")]
+    public AudioSource npcAudioSource;
 
-    [Tooltip("Animaciones de la abuela mientras da el encargo.\nAgrega un elemento por cada estado del Animator.")]
+    [Tooltip("Audio Fase 1 — encargo del mandado")]
+    public AudioClip questClip;
+
+    [Tooltip("Audio Fase 2 — agradecimiento al recibir el mercado")]
+    public AudioClip thankClip;
+
+    [Tooltip("Audio Fase 3 — regaño por volver sin mercado")]
+    public AudioClip scoldClip;
+
+    // ── SECUENCIAS DE ANIMACIÓN ───────────────────────────────────────
+    [Header("── Fase 1: Encargo ──────────────────────────────────────")]
     public List<AnimationStep> questAnimationSequence = new List<AnimationStep>();
 
-    // ── FASE 2: AGRADECIMIENTO ────────────────────────────────────────
-    [Header("── Fase 2: Recibe el mercado y agradece ─────")]
-    [Tooltip("Audio que suena cuando la abuela recibe el mercado\n(ej: '¡Gracias mijo, qué bueno!')")]
-    public AudioSource thankAudioSource;
-
-    [Tooltip("Animaciones de la abuela al recibir el mercado.\nAgrega un elemento por cada estado del Animator.")]
+    [Header("── Fase 2: Agradecimiento ──────────────────────────────")]
     public List<AnimationStep> thankAnimationSequence = new List<AnimationStep>();
-    // ── FASE 3: NO TRAJO EL MANDADO ───────────────────────────
-    [Header("── Fase 3: No trajo el mandado ─────────────")]
-    [Tooltip("Audio cuando el jugador vuelve sin el mercado")]
-    public AudioSource scoldAudioSource;
 
-    [Tooltip("Animaciones de regaño")]
+    [Header("── Fase 3: Regaño ─────────────────────────────────────")]
     public List<AnimationStep> scoldAnimationSequence = new List<AnimationStep>();
 
     // ── OBJETOS ───────────────────────────────────────────────────────
-    [Header("── Objetos a Spawnear ────────────────────────")]
-    [Tooltip("La plata que la abuela le entrega al jugador.\n· Object To Move → el prefab del billete\n· Spawn Point   → donde aparece\n· Spawn Delay   → segundos tras iniciar la animación")]
+    [Header("Objetos a Spawnear")]
     public SpawnableItem moneyItem;
 
     // ── CONTROL INTERNO ───────────────────────────────────────────────
     private bool isInteracting = false;
 
-    // Estado que guardamos para restaurar al jugador
     private FirstPersonController playerController;
-    private DynamicMoveProvider    moveProvider;
-    private Rigidbody              playerRigidbody;
+    private DynamicMoveProvider   moveProvider;
+    private Rigidbody             playerRigidbody;
 
     private bool    originalPlayerCanMove;
     private bool    originalHeadBob;
@@ -78,7 +80,6 @@ public class GrandmaInteraction : MonoBehaviour
         if (npcAnimator != null)
             npcAnimator.applyRootMotion = false;
 
-        // Busca el sistema de diálogo hermano en el mismo padre
         if (transform.parent != null)
             dialogSistem = transform.parent.Find("DialogSistem")?.gameObject;
     }
@@ -88,136 +89,118 @@ public class GrandmaInteraction : MonoBehaviour
     {
         if (!other.CompareTag("Player") || isInteracting) return;
 
-        // ── FASE 1: La abuela da el encargo ───────────────────────────
-        // Solo si la misión todavía no empezó
-        if (MissionState.CurrentPhase == MissionState.Phase.Idle)
+        switch (MissionState.CurrentPhase)
         {
-            Debug.Log("[Abuela] El jugador llegó por primera vez → iniciando encargo.");
-            InitializePlayer(other.gameObject);
-            StartCoroutine(QuestSequence());
-            return;
+            case MissionState.Phase.Idle:
+                InitializePlayer(other.gameObject);
+                StartCoroutine(QuestSequence());
+                break;
+
+            case MissionState.Phase.GroceriesGiven:
+                InitializePlayer(other.gameObject);
+                StartCoroutine(ThankSequence());
+                break;
+
+            case MissionState.Phase.MoneyCollected:
+                InitializePlayer(other.gameObject);
+                StartCoroutine(ScoldSequence());
+                break;
+
+            case MissionState.Phase.QuestGiven:
+                Debug.Log("[Abuela] Jugador aún no recogió la plata.");
+                break;
+
+            case MissionState.Phase.MissionComplete:
+                Debug.Log("[Abuela] Misión completa.");
+                break;
         }
-
-        // ── FASE 2: El jugador regresa con el mercado ─────────────────
-        // Solo activa el agradecimiento si el jugador ya tiene los comestibles
-        if (MissionState.CurrentPhase == MissionState.Phase.GroceriesGiven)
-        {
-            Debug.Log("[Abuela] El jugador regresó con el mercado → iniciando agradecimiento.");
-            InitializePlayer(other.gameObject);
-            StartCoroutine(ThankSequence());
-            return;
-        }
-        // ── FASE 3: VOLVIÓ SIN EL MERCADO ───────────────────────
-        if (MissionState.CurrentPhase == MissionState.Phase.MoneyCollected)
-        {
-            Debug.Log("[Abuela] El jugador volvió sin el mercado → regaño.");
-            InitializePlayer(other.gameObject);
-            StartCoroutine(ScoldSequence());
-            return;
-        }
-
-
-        // ── ESTADOS INTERMEDIOS: feedback sin bloquear al jugador ──────
-        if (MissionState.CurrentPhase == MissionState.Phase.QuestGiven)
-            Debug.Log("[Abuela] El jugador volvió sin recoger la plata. La abuela lo ignora.");
-
-        if (MissionState.CurrentPhase == MissionState.Phase.MoneyCollected)
-            Debug.Log("[Abuela] El jugador tiene la plata pero aún no fue a la tienda. La abuela espera.");
-
-        if (MissionState.CurrentPhase == MissionState.Phase.MissionComplete)
-            Debug.Log("[Abuela] La misión ya está completa. La abuela descansa.");
     }
 
-    // ── SECUENCIA DE ENCARGO (Fase 1) ─────────────────────────────────
+    // ── SECUENCIAS ────────────────────────────────────────────────────
+
     IEnumerator QuestSequence()
     {
         isInteracting = true;
-
-        // Desactiva diálogos flotantes mientras habla
         if (dialogSistem != null) dialogSistem.SetActive(false);
-
         LockPlayer();
 
-        // Suena el audio del encargo
-        if (questAudioSource != null)
-            questAudioSource.Play();
+        PlayClip(questClip);
 
-        // Spawnea la plata con su delay (la abuela "la saca del bolsillo")
         if (moneyItem.objectToMove != null && moneyItem.spawnPoint != null)
             StartCoroutine(SpawnWithDelay(moneyItem));
 
-        // Reproduce las animaciones del encargo
         yield return StartCoroutine(PlayAnimationSequence(questAnimationSequence));
 
         RestorePlayer();
         isInteracting = false;
-
         if (dialogSistem != null) dialogSistem.SetActive(true);
-
-        // Avanza el estado de la misión
         MissionState.SetQuestGiven();
-        // El trigger queda activo para que Fase 2 pueda dispararse al regresar
     }
 
-    // ── SECUENCIA DE AGRADECIMIENTO (Fase 2) ──────────────────────────
     IEnumerator ThankSequence()
     {
         isInteracting = true;
-
         if (dialogSistem != null) dialogSistem.SetActive(false);
-
         LockPlayer();
 
-        // Suena el audio de gracias
-        if (thankAudioSource != null)
-            thankAudioSource.Play();
+        PlayClip(thankClip);
 
-        // Reproduce las animaciones de agradecimiento
         yield return StartCoroutine(PlayAnimationSequence(thankAnimationSequence));
 
         RestorePlayer();
         isInteracting = false;
-
         if (dialogSistem != null) dialogSistem.SetActive(true);
-
-        // Avanza el estado final
         MissionState.SetMissionComplete();
-
-        // Desactiva el trigger de la abuela permanentemente: misión terminada
         gameObject.SetActive(false);
         Debug.Log("[Abuela] Misión completada. Trigger desactivado.");
     }
-    // ── SECUENCIA DE REGAÑO (Fase 3) ─────────────────────────
+
     IEnumerator ScoldSequence()
     {
         isInteracting = true;
-
         if (dialogSistem != null) dialogSistem.SetActive(false);
-
         LockPlayer();
 
-        // Audio de regaño
-        if (scoldAudioSource != null)
-            scoldAudioSource.Play();
+        PlayClip(scoldClip);
 
-        // Animación de regaño
         yield return StartCoroutine(PlayAnimationSequence(scoldAnimationSequence));
 
         RestorePlayer();
         isInteracting = false;
-
         if (dialogSistem != null) dialogSistem.SetActive(true);
-
-        Debug.Log("[Abuela] El jugador fue regañado por no traer el mandado.");
+        Debug.Log("[Abuela] El jugador fue regañado.");
     }
 
-    // ── HELPERS ───────────────────────────────────────────────────────
+    // ── HELPER DE AUDIO ───────────────────────────────────────────────
 
-    /// <summary>Reproduce una lista de AnimationStep en orden.</summary>
+    /// <summary>
+    /// Detiene lo que esté sonando, asigna el clip y lo reproduce.
+    /// Si el clip está vacío, avisa en consola sin crashear.
+    /// </summary>
+    void PlayClip(AudioClip clip)
+    {
+        if (npcAudioSource == null)
+        {
+            Debug.LogWarning("[Abuela] npcAudioSource no asignado en el Inspector.");
+            return;
+        }
+
+        if (clip == null)
+        {
+            Debug.LogWarning("[Abuela] El AudioClip para esta fase no está asignado.");
+            return;
+        }
+
+        npcAudioSource.Stop();       // Para cualquier audio previo
+        npcAudioSource.clip = clip;  // Cambia el clip al de esta fase
+        npcAudioSource.Play();       // Reproduce
+    }
+
+    // ── RESTO DE HELPERS (sin cambios) ────────────────────────────────
+
     IEnumerator PlayAnimationSequence(List<AnimationStep> sequence)
     {
         if (npcAnimator == null) yield break;
-
         foreach (AnimationStep step in sequence)
         {
             if (!string.IsNullOrEmpty(step.stateName))
@@ -228,7 +211,6 @@ public class GrandmaInteraction : MonoBehaviour
         }
     }
 
-    /// <summary>Mueve y activa un SpawnableItem después de su delay.</summary>
     IEnumerator SpawnWithDelay(SpawnableItem item)
     {
         yield return new WaitForSeconds(item.spawnDelay);

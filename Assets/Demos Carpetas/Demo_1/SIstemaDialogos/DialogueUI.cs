@@ -64,17 +64,18 @@ public class DialogueUI : MonoBehaviour
 
     // ── Unity ──────────────────────────────────────────────────────────────────
     private void Awake()
-    {
-        // Cablear botones fijos
-        continueButton.onClick.AddListener(() => DialogueManager.Instance.NextLine());
-        exitButton.onClick.AddListener(    () => DialogueManager.Instance.EndDialogue());
+{
+    continueButton.onClick.AddListener(() => DialogueManager.Instance.NextLine());
 
-        // Cablear botones de opción con su índice
-        choice0Button.onClick.AddListener(() => DialogueManager.Instance.OnChoiceSelected(0));
-        choice1Button.onClick.AddListener(() => DialogueManager.Instance.OnChoiceSelected(1));
+    // Exit button solo si es diferente a los botones de elección
+    if (exitButton != null && exitButton != choice0Button && exitButton != choice1Button)
+        exitButton.onClick.AddListener(() => DialogueManager.Instance.EndDialogue());
 
-        gameObject.SetActive(false);
-    }
+    choice0Button.onClick.AddListener(() => DialogueManager.Instance.OnChoiceSelected(0));
+    choice1Button.onClick.AddListener(() => DialogueManager.Instance.OnChoiceSelected(1));
+
+    gameObject.SetActive(false);
+}
 
     private void LateUpdate()
     {

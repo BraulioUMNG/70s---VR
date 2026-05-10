@@ -60,6 +60,11 @@ public static class MissionState
             OnMissionComplete?.Invoke(); // ← NUEVO: dispara el evento a todos los suscriptores
         }
     }
+    public static void Reset()
+    {
+        CurrentPhase = Phase.Idle;
+        Debug.Log("[MissionState] Estado reiniciado.");
+    }
 
     // ── HELPERS DE CONSULTA ───────────────────────────────────────────
     public static bool HasMoney => CurrentPhase >= Phase.MoneyCollected;

@@ -76,6 +76,9 @@ public class CreditsVideoTrigger : MonoBehaviour
         Cursor.visible = true;
         Time.timeScale = 1f;
 
+        // Resetea la misión para que se pueda jugar de nuevo
+        MissionState.Reset();
+
         Debug.Log("[CreditsVideoTrigger] Video terminado. Cargando menú principal...");
         SceneFader.Instance.LoadScene(mainMenuScene);
     }

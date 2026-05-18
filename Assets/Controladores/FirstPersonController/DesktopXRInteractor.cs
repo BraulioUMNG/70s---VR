@@ -29,18 +29,16 @@ public class DesktopXRInteractor : MonoBehaviour
     private bool rotating = false;
     private bool modoRestringido = false;
 
-    // Valores dinámicos de restricción
     private bool restringirRotX, restringirRotY, restringirRotZ, restringirZoom, permitirRotacion, permitirZoom;
-
     private Vector3 initialObjectLocalPosition;
 
     [Header("Input VR")]
-    public InputActionReference botonVR; // Nuevo botón para VR
+    public InputActionReference botonVR;
+
     void Start()
     {
         interactor = rayInteractor as IXRSelectInteractor;
 
-        // Activar acción VR si está asignada
         if (botonVR != null)
             botonVR.action.Enable();
     }
@@ -56,43 +54,24 @@ public class DesktopXRInteractor : MonoBehaviour
         HandleRotation();
         HandleMovement();
 
-        // Tecla E de escritorio
         if (Input.GetKeyDown(KeyCode.E) && currentObject != null)
-        {
             ActivarModoRestringido();
-        }
 
-        // Botón VR
         if (botonVR != null && currentObject != null && botonVR.action.WasPressedThisFrame())
-        {
             ActivarModoRestringido();
-        }
     }
 
-    // Extraemos la lógica común a un método
     void ActivarModoRestringido()
     {
-        // 1. Restaurar posición original (si quieres, puedes descomentar la línea de posición)
-        // currentObject.transform.localPosition = initialObjectLocalPosition;
-
-        // 2. Aplicar rotación desde InteractionConstraints si está activada
         if (constraints != null && constraints.usarRotacionE)
-        {
             currentObject.transform.rotation = Quaternion.Euler(constraints.rotacionInicialE);
-        }
 
-        // 3. Alinear attachTransform con grabPoint si existe
         Transform grabPoint = currentObject.transform.Find("GrabPoint");
         if (grabPoint != null)
-        {
             rayInteractor.attachTransform.rotation = grabPoint.rotation;
-        }
         else
-        {
             rayInteractor.attachTransform.rotation = currentObject.transform.rotation;
-        }
 
-        // 4. Activar modo restringido para inspección
         modoRestringido = true;
     }
 
@@ -114,7 +93,6 @@ public class DesktopXRInteractor : MonoBehaviour
                     if (currentObject != null)
                         initialObjectLocalPosition = currentObject.transform.localPosition;
 
-                    // Manejar restricciones
                     if (constraints != null)
                     {
                         permitirRotacion = constraints.permitirRotacion;
@@ -131,7 +109,6 @@ public class DesktopXRInteractor : MonoBehaviour
                         restringirZoom = false;
                     }
 
-                    // Ignorar colisiones con el jugador mientras se sostiene
                     if (playerController != null)
                     {
                         Collider playerCollider = playerController.GetComponent<Collider>();
@@ -140,7 +117,6 @@ public class DesktopXRInteractor : MonoBehaviour
                             Physics.IgnoreCollision(objectCollider, playerCollider, true);
                     }
 
-                    // Asegurar distancia mínima
                     float safeDistance = Mathf.Max(currentDistance, 1f);
                     rayInteractor.attachTransform.localPosition = new Vector3(0, 0, safeDistance);
                 }
@@ -163,6 +139,17 @@ public class DesktopXRInteractor : MonoBehaviour
             rayInteractor.interactionManager.SelectExit(interactor, currentObject);
             currentObject = null;
             constraints = null;
+
+            // ── FIX: si sueltas el objeto mientras rotabas, desbloquea
+            // la cámara inmediatamente sin esperar al MouseButtonUp(1)
+            if (rotating)
+            {
+                rotating = false;
+                if (playerController != null)
+                    playerController.enabled = true;
+
+                Debug.Log("[DesktopXRInteractor] Objeto soltado durante rotación → cámara desbloqueada.");
+            }
         }
     }
 
@@ -186,6 +173,15 @@ public class DesktopXRInteractor : MonoBehaviour
 
     void HandleRotation()
     {
+        // ── FIX: el desbloqueo de cámara va ANTES del early return para
+        // que funcione aunque currentObject ya sea null al soltar el objeto
+        if (Input.GetMouseButtonUp(1))
+        {
+            rotating = false;
+            if (playerController != null)
+                playerController.enabled = true;
+        }
+
         if (currentObject == null) return;
 
         if (Input.GetMouseButtonDown(1))
@@ -209,12 +205,6 @@ public class DesktopXRInteractor : MonoBehaviour
             if (usarY) rayInteractor.attachTransform.Rotate(Vector3.up, mouseX * rotationSpeed * Time.deltaTime, Space.World);
             if (usarX) rayInteractor.attachTransform.Rotate(Vector3.right, -mouseY * rotationSpeed * Time.deltaTime, Space.Self);
             if (usarZ) rayInteractor.attachTransform.Rotate(Vector3.forward, mouseX * rotationSpeed * Time.deltaTime, Space.Self);
-        }
-
-        if (Input.GetMouseButtonUp(1))
-        {
-            rotating = false;
-            if (playerController != null) playerController.enabled = true;
         }
     }
 
